@@ -52,7 +52,7 @@ cacheSolve <- function(customMatrix, ...) {
                 originalMatrix <- customMatrix$get()
                 solution <- solve(originalMatrix, ...)
                 customMatrix$setInverse(solution)
-                cachedInverse <- x$getInverse()
+                cachedInverse <- customMatrix$getInverse()
         }
         else {
                 print('Getting cached data')
