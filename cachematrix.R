@@ -3,36 +3,23 @@
 
 ## Write a short comment describing this function
 
-makeCacheMatrix <- function(...) {
-        set <- function(...) {
-                args <- c(as.list(environment()), list(...))
-
-                if (class(args[[1]]) == 'matrix') {
-                        internalMatrix <<- args[[1]]
-                }
-                else {
-                        internalMatrix <<- matrix(...)
-                }
-        }
-
+makeCacheMatrix <- function(mat = matrix()) {
+        inv <- NULL
         get <- function() {
-                internalMatrix
+                return(mat)
         }
-        
-        getInverse <- function() {
-                print('Getting inverse')
-                if (exists('inv')) {
-                        print('Inverse cached already')
-                        return(inv)
-                }
-                else {
-                        inv <<- solve(internalMatrix)
-                        return(inv)
-                }
+        set <- function(newMatrix) {
+                mat <<- newMatrix
         }
 
-        set(...)
-        list(set = set, get = get, getInverse = getInverse, inv=inv)
+        getInverse <- function() {
+                return(inv)
+        }
+        setInverse <- function(newInverse) {
+                inv <<- newInverse
+        }
+
+        list(set = set, get = get, getInverse = getInverse, setInverse=setInverse)
 }
 
 
@@ -40,5 +27,16 @@ makeCacheMatrix <- function(...) {
 
 cacheSolve <- function(x, ...) {
         # Return a matrix that is the inverse of 'x'
-        x$getInverse()
+        cachedInverse <- x$getInverse()
+        if (is.null(cachedInverse)) {
+                originalMatrix <- x$get()
+                solution <- solve(originalMatrix, ...)
+                x$setInverse(solution)
+                cachedInverse <- x$getInverse()
+        }
+        else {
+                print('Getting cached data')
+        }
+        cachedInverse
+
 }
