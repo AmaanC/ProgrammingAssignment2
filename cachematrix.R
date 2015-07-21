@@ -46,17 +46,22 @@ makeCacheMatrix <- function(mat = matrix()) {
 # It returns a matrix which is the inverse of the matrix stored in cachedMatrix$get() assuming the solution exists
 
 cacheSolve <- function(customMatrix, ...) {
-        # Return a matrix that is the inverse of 'x'
+        # Return a matrix that is the inverse of "customMatrix$get()"
         cachedInverse <- customMatrix$getInverse()
+        # If customMatrix$getInverse() returns NULL, it means that the inverse hasn't been cached.
         if (is.null(cachedInverse)) {
+                # Get the original matrix so we can pass it to solve
                 originalMatrix <- customMatrix$get()
                 solution <- solve(originalMatrix, ...)
+                # Save the solution in the customMatrix's cache
                 customMatrix$setInverse(solution)
+                # Update the variable so it simply be returned at the end of the function
                 cachedInverse <- customMatrix$getInverse()
         }
         else {
-                print('Getting cached data')
+                print('Solution was cached already')
         }
+        
         return(cachedInverse)
 
 }
